@@ -1,6 +1,7 @@
 syntax = "proto3";
 package dcs.mission.v0;
 import "dcs/common/v0/common.proto";
+import "google/protobuf/struct.proto";
 option csharp_namespace = "RurouniJones.Dcs.Grpc.V0.Mission";
 option go_package = "github.com/DCS-gRPC/go-bindings/dcs/v0/mission";
 
@@ -25,10 +26,24 @@ service MissionService {
   // datetime string.
   rpc GetScenarioCurrentTime(GetScenarioCurrentTimeRequest)
       returns (GetScenarioCurrentTimeResponse) {}
+
+  // Adds a new mission command
+  // See https://wiki.hoggitworld.com/view/DCS_func_addCommand
+  rpc AddMissionCommand(AddMissionCommandRequest)
+      returns (AddMissionCommandResponse) {}
+
+  // Adds a new command sub menu
+  // See https://wiki.hoggitworld.com/view/DCS_func_addSubMenu
+  rpc AddMissionCommandSubMenu(AddMissionCommandSubMenuRequest)
+      returns (AddMissionCommandSubMenuResponse) {}
+
+  // Removes a registered mission command.
+  // See https://wiki.hoggitworld.com/view/DCS_func_removeItem
+  rpc RemoveMissionCommandItem(RemoveMissionCommandItemRequest)
+      returns (RemoveMissionCommandItemResponse) {}
 }
 
-message StreamEventsRequest {
-}
+message StreamEventsRequest {}
 
 // The DCS Event information. Contains event information and a timestamp.
 message StreamEventsResponse {
@@ -373,6 +388,10 @@ message StreamEventsResponse {
     DisconnectReason reason = 2;
   }
 
+  message MissionCommandEvent {
+    google.protobuf.Struct details = 3;
+  }
+
   // The event's mission time.
   double time = 1;
   oneof event {
@@ -420,7 +439,7 @@ message StreamEventsResponse {
     ConnectEvent connect = 8192;
     DisconnectEvent disconnect = 8193;
     PlayerSendChatEvent player_send_chat = 8194;
-    PlayerChangeSlotEvent player_change_slot = 8195;
+    MissionCommandEvent mission_command = 8195;
   }
 }
 
@@ -461,13 +480,35 @@ message StreamUnitsResponse {
 message GetScenarioStartTimeRequest {
 }
 
-message GetScenarioStartTimeResponse {
-  string datetime = 1;
-}
+message GetScenarioStartTimeResponse { string datetime = 1; }
 
 message GetScenarioCurrentTimeRequest {
 }
 
-message GetScenarioCurrentTimeResponse {
-  string datetime = 1;
+message GetScenarioCurrentTimeResponse { string datetime = 1; }
+
+message AddMissionCommandRequest {
+  string name = 1;
+  repeated string path = 2;
+  google.protobuf.Struct details = 3;
+}
+
+message AddMissionCommandResponse {
+  repeated string path = 1;
+}
+
+message AddMissionCommandSubMenuRequest {
+  string name = 1;
+  repeated string path = 2;
+}
+
+message AddMissionCommandSubMenuResponse {
+  repeated string path = 1;
+}
+
+message RemoveMissionCommandItemRequest {
+  repeated string path = 1;
+}
+
+message RemoveMissionCommandItemResponse {
 }
