@@ -360,13 +360,18 @@ message Target {
  * players but can also be used by things like Jester for setting waypoints
  */
 message MarkPanel {
+  // The id of the mark panel.
   uint32 id = 1;
-  // I have no idea what this time value means
+  // The time in seconds relative to the mission start the mark got created.
   double time = 2;
-  Unit initiator = 3;
+  // The name of the player that created the mark. Not set if the mark was
+  // created by a game master.
+  optional string author = 3;
+  // If set, the mark is only visible for the specified coalition.
   optional Coalition coalition = 4;
-  optional uint32 group_id = 5;
+  // The text content of the mark.
   optional string text = 6;
+  // The position of the mark.
   Position position = 7;
 }
 
